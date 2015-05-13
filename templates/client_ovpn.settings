@@ -1,0 +1,14 @@
+client
+dev tun
+proto udp
+remote $EXTHOST 1194
+resolv-retry infinite
+nobind
+persist-key
+persist-tun
+cipher AES-256-CBC
+comp-lzo
+verb 4
+ns-cert-type server
+key-direction 1
+auth-user-pass
