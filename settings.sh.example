@@ -1,0 +1,19 @@
+CLOUD_NAME='MY_ENVIRONMENTS_NAME'
+
+export EASYRSA_PATH="/etc/openvpn/easy-rsa"
+source $EASYRSA_PATH/vars
+
+export USER_PW_FILE="/etc/openvpn/user_passwd.csv"
+export OPENVPN_MY_BIN="/etc/openvpn/bin"
+
+
+export EXTHOST="gdc-ovpn.opensciencedatacloud.org"
+export TEMPLATE_DIR="/etc/openvpn/templates"
+export KEY_PATH="/etc/openvpn/easy-rsa/keys/"
+export CA_PATH="$KEY_PATH/ca.crt"
+export TA_KEY_PATH="$KEY_PATH/ta.key"
+
+export ARCHIVE_CERT_DIR="$KEY_DIR/user_certs/"
+export USER_PW_FILE="/etc/openvpn/user_passwd.csv"
+
+export PATH=$PATH:$EASYRSA_PATH:$OPENVPN_MY_BIN
