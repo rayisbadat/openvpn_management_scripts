@@ -31,7 +31,7 @@ export KEY_CN=$username
 export KEY_EMAIL=$email
 
 #This create the key's for the road warrior
-build-key  $username
+build-key-batch  $username
 
 #Backup certs so we can revoke them if ever needed
 [ -d  $KEY_DIR/user_certs/ ]  || mkdir  $KEY_DIR/user_certs/
