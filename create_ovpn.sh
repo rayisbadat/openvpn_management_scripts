@@ -57,14 +57,5 @@ $(cat $TA_KEY_PATH)
 </tls-auth>
 "
 
-#Some kind of inline key footer
-## -----BEGIN RSA SIGNATURE-----
-## DIGEST:sha256
-## CFu16mbHeYnW8QYTvpOGLQliz6sqYIEJFrSl/5BdWTxXnsfqGO
-## 1APvlR1Ontv3SJapwMl44YTLCzgEAuvKOUfFMlhvJE43pqBwbw
-## e0cmB/3r7SskfeQNIekofLBSTMisWHrvLagfHoZugY1BK1U7my
-## N9Nyb5cGunWIxAMJEvrCA=
-## -----END RSA SIGNATURE-----
-
 perl -n -e 'undef $/;' -e' m|(-----BEGIN CERTIFICATE-----.*-----END CERTIFICATE-----)|igsm && print "$1\n"' $USER_CERT_PATH  | sed 's/^/##/'
 
