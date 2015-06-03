@@ -29,6 +29,7 @@ set -e
 #Override exports
 export KEY_CN=$username
 export KEY_EMAIL=$email
+export KEY_ALTNAMES="DNS:${KEY_CN}"
 
 #This create the key's for the road warrior
 build-key-batch  $username
@@ -40,6 +41,7 @@ cp $KEY_DIR/$username.crt $KEY_DIR/user_certs/$username.crt-$(date +%F-%T)
 #This generates the ovpn file for the road warrior
 # aka $0 $username email
 create_ovpn.sh $KEY_CN $KEY_EMAIL > $KEY_DIR/ovpn_files/${username}-${CLOUD_NAME}.ovpn
+create_seperated_vpn_zip.sh $KEY_CN 
 
 #Create the vpn username/password hack
 #password=$(pwgen -c -n -y -s 20 1 | perl -pe 's/[^A-z0-9_\-@]//g';) 
