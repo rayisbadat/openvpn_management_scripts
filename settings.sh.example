@@ -8,7 +8,7 @@ export OPENVPN_MY_BIN="/etc/openvpn/bin"
 
 
 export EXTHOST="gdc-ovpn.opensciencedatacloud.org"
-export TEMPLATE_DIR="/etc/openvpn/templates"
+export TEMPLATE_DIR="/etc/openvpn/bin/templates"
 export KEY_PATH="/etc/openvpn/easy-rsa/keys/"
 export CA_PATH="$KEY_PATH/ca.crt"
 export TA_KEY_PATH="$KEY_PATH/ta.key"
