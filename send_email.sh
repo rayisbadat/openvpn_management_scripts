@@ -14,6 +14,11 @@ then
     exit 1
 fi
 
+if [ -e /etc/profile.d/99-proxy.sh ]
+then
+    source /etc/profile.d/99-proxy.sh
+fi
+
 
 set -e
 set -u
@@ -79,12 +84,12 @@ do
     if vpn_user_exists
     then
         echo "$vpn_username exists skipping"
-        continue
+        #continue
     fi
 
-    create_vpn_user
-    get_vpn_password
-    create_vpn_zip
+    #create_vpn_user
+    #get_vpn_password
+    #create_vpn_zip
     create_paste_site_entry
     send_welcome_letter
     
