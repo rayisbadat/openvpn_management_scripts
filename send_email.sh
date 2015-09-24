@@ -14,6 +14,11 @@ then
     exit 1
 fi
 
+if [ -e /etc/profile.d/99-proxy.sh ]
+then
+    source /etc/profile.d/99-proxy.sh
+fi
+
 
 set -e
 set -u
