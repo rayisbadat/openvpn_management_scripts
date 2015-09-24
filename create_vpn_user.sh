@@ -32,7 +32,7 @@ export KEY_EMAIL=$email
 export KEY_ALTNAMES="DNS:${KEY_CN}"
 
 #This create the key's for the road warrior
-build-key-batch  $username
+build-key-batch  $username &>/dev/null
 
 #Backup certs so we can revoke them if ever needed
 [ -d  $KEY_DIR/user_certs/ ]  || mkdir  $KEY_DIR/user_certs/
@@ -40,11 +40,12 @@ cp $KEY_DIR/$username.crt $KEY_DIR/user_certs/$username.crt-$(date +%F-%T)
 
 #This generates the ovpn file for the road warrior
 # aka $0 $username email
-create_ovpn.sh $KEY_CN $KEY_EMAIL > $KEY_DIR/ovpn_files/${username}-${CLOUD_NAME}.ovpn
-create_seperated_vpn_zip.sh $KEY_CN 
+create_ovpn.sh $KEY_CN $KEY_EMAIL > $KEY_DIR/ovpn_files/${username}-${CLOUD_NAME}.ovpn 2> /dev/null
+create_seperated_vpn_zip.sh $KEY_CN &> /dev/null
 
 #Create the vpn username/password hack
-#password=$(pwgen -c -n -y -s 20 1 | perl -pe 's/[^A-z0-9_\-@]//g';) 
 password=$(perl -e 'my $string; my @chars=("A".."Z","a".."z","@","_","-"); while ( not $string =~ /[-_@]/) { $string=""; $string .= $chars[rand @chars] for 1..15;} print "$string"')
-echo "$username,$password" >> $USER_PW_FILE
+password_hashed=$( python -c "import bcrypt;print bcrypt.hashpw('$password', bcrypt.gensalt())" )
+echo "$username,$password_hashed" >> $USER_PW_FILE
+echo $password
 

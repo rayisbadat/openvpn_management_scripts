@@ -30,13 +30,10 @@ export VPN_USER_CSV="/etc/openvpn/user_passwd.csv"
 create_vpn_user() {
     #./create_vpn_user.sh
     #USAGE: ./create_vpn_user.sh username [email]
-    $VPN_BIN_ROOT/create_vpn_user.sh "$vpn_username" "$vpn_email"
+    vpn_password=$($VPN_BIN_ROOT/create_vpn_user.sh "$vpn_username" "$vpn_email")
 }
 create_vpn_zip() {
     $VPN_BIN_ROOT/make_zips.sh "$vpn_username"
-}
-get_vpn_password(){
-     export vpn_password=$( perl -n -e "m|^$vpn_username,(.+)$| && print $1\n" ${VPN_USER_CSV} )
 }
 vpn_user_exists() {
     grep -E "^$vpn_username," ${VPN_USER_CSV} &>/dev/null
@@ -64,7 +61,7 @@ do
 
 
     #Send the current user to stderr incase we abort to error
-    echo "$line" 
+    echo "$line" 1>&2
 
     #CSV should only have two fields
     vpn_username=$(echo $line | cut -f1 -d"," | tr -dc '[:alnum:]\n\r' | tr '[:upper:]' '[:lower:]' )
@@ -83,7 +80,6 @@ do
     fi
 
     create_vpn_user
-    get_vpn_password
     create_vpn_zip
     create_paste_site_entry
     send_welcome_letter
