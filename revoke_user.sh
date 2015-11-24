@@ -17,3 +17,5 @@ source $EASYRSA_PATH/vars
 export KEY_CN=$username
 
 revoke-full $username
+
+sed -i "/${username},/d" $USER_PW_FILE
