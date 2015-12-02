@@ -2,6 +2,7 @@
 #   Copyright 2015 CDIS
 #   Author: Ray Powell rpowell1@uchicago.edu
 
+
 set -u
 set -e
 
@@ -16,6 +17,8 @@ source $EASYRSA_PATH/vars
 #Override exports
 export KEY_CN=$username
 
+set +e
 revoke-full $username
+set -e
 
 sed -i "/${username},/d" $USER_PW_FILE
