@@ -46,7 +46,7 @@ check_for_revoked(){
 
 find_email() {
     #username=$( openssl x509 -in ../easy-rsa/keys/jporter.crt -text | grep Subject | grep CN | perl -ne 'm|CN=([^/]+)/| && print "$1\n"' )
-    openssl x509 -in $crt -text | grep Subject | grep CN | perl -ne 'm|emailAddress=\s+(\S+)| && print "$1\n"'
+    openssl x509 -in $crt -text | grep Subject | grep CN | perl -ne 'm|emailAddress=\s*(\S+)| && print "$1\n"'
 }
 
 check_status(){
