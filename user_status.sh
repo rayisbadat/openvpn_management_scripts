@@ -11,7 +11,7 @@ cmd=${1}
 
 if [ -z "$cmd" ]
 then
-    echo "USAGE: $0 [all|enabled|disabled|revoked]"
+    echo "USAGE: $0 [all|active|disabled|revoked]"
     exit 1
 fi
 

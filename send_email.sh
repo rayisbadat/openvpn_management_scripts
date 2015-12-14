@@ -30,6 +30,7 @@ export PASTE_SITE_USERNAME=$(cat /etc/openvpn/uat_paste_username)
 export PASTE_SITE_PASSWORD=$(cat /etc/openvpn/uat_paste_password)
 export VPN_BIN_ROOT="/etc/openvpn/bin"
 export VPN_USER_CSV="/etc/openvpn/user_passwd.csv"
+export VPN_FILE_ATTACHMENTS="-a$VPN_BIN_ROOT/OpenVPN_for_GDC_Installation_Guide_26OCT.pdf"
 
 
 create_vpn_user() {
@@ -52,7 +53,7 @@ create_paste_site_entry() {
 send_welcome_letter() {
     cat $VPN_BIN_ROOT/templates/email_paste_template.txt | envsubst | mutt $vpn_email -e "set realname='$EMAIL'" -s "Welcome to the Open Science Data cloud (OSDC) private 'paste' site."
     echo "$vpn_creds_url" | mutt $vpn_email -e "set realname='$EMAIL'"  -s 'GDC OpenVPN login username and password url'
-    cat $VPN_BIN_ROOT/templates/email_config_files_template.txt | envsubst | mutt $vpn_email -e "set realname='$EMAIL'"  -s "GDC VPN Configuration Files" -a/tmp/$vpn_username.zip
+    cat $VPN_BIN_ROOT/templates/email_config_files_template.txt | envsubst | mutt $vpn_email -e "set realname='$EMAIL'"  -s "GDC VPN Configuration Files" -a/tmp/$vpn_username.zip $VPN_FILE_ATTACHMENTS
 }
 
 
