@@ -6,7 +6,7 @@ username=${1}
 password=${2}
 
 set -e
-set -x
+set -u
 
 if [ "$username" == "" ] || [ "$password" == "" ]
 then
