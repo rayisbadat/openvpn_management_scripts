@@ -88,7 +88,7 @@ do
     create_vpn_user
     create_vpn_zip
     create_paste_site_entry
-#    send_welcome_letter
+    send_welcome_letter
     
 
 
