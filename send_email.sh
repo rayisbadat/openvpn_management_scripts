@@ -19,6 +19,10 @@ then
     source /etc/profile.d/99-proxy.sh
 fi
 
+if [ -e /etc/openvpn/bin/settings.sh ]
+then
+    source /etc/openvpn/bin/settings.sh
+fi
 
 set -e
 set -u
@@ -52,8 +56,8 @@ create_paste_site_entry() {
 }
 send_welcome_letter() {
     cat $VPN_BIN_ROOT/templates/email_paste_template.txt | envsubst | mutt $vpn_email -e "set realname='$EMAIL'" -s "Welcome to the Open Science Data cloud (OSDC) private 'paste' site."
-    echo "$vpn_creds_url" | mutt $vpn_email -e "set realname='$EMAIL'"  -s 'GDC OpenVPN login username and password url'
-    cat $VPN_BIN_ROOT/templates/email_config_files_template.txt | envsubst | mutt $vpn_email -e "set realname='$EMAIL'"  -s "GDC VPN Configuration Files" -a/tmp/$vpn_username.zip $VPN_FILE_ATTACHMENTS
+    echo "$vpn_creds_url" | mutt $vpn_email -e "set realname='$EMAIL'"  -s "GDC OpenVPN login username and password url: $CLOUD_NAME"
+    cat $VPN_BIN_ROOT/templates/email_config_files_template.txt | envsubst | mutt $vpn_email -e "set realname='$EMAIL'"  -s "GDC VPN Configuration Files: $CLOUD_NAME" -a/tmp/$vpn_username.zip $VPN_FILE_ATTACHMENTS
 }
 
 
