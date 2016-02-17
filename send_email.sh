@@ -34,7 +34,7 @@ export PASTE_SITE_USERNAME=$(cat /etc/openvpn/uat_paste_username)
 export PASTE_SITE_PASSWORD=$(cat /etc/openvpn/uat_paste_password)
 export VPN_BIN_ROOT="/etc/openvpn/bin"
 export VPN_USER_CSV="/etc/openvpn/user_passwd.csv"
-export VPN_FILE_ATTACHMENTS="-a$VPN_BIN_ROOT/OpenVPN_for_GDC_Installation_Guide_26OCT.pdf"
+export VPN_FILE_ATTACHMENTS="-a$VPN_BIN_ROOT/OpenVPN_for_GDC_Installation_Guide.pdf"
 
 
 create_vpn_user() {
