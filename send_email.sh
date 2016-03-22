@@ -48,8 +48,8 @@ create_paste_site_entry() {
 }
 create_ots_site_entry() {
     ots_out=$( curl -u "${OTS_USERNAME}:${OTS_API_TOKEN}" -F "secret=$( echo -e $vpn_username\\n${vpn_password} )"  ${OTS_URL_BASE}${OTS_SHARE_URI} )
-    metadata=$( echo $ots_out | perl -ne 'm|,"metadata_key":"([^"]+)",| && print "$1\n"' )
-    vpn_creds_url=${OTS_URL_BASE}${OTS_PRIVATE_URI}/${metadata}
+    secret_key=$( echo $ots_out | perl -ne 'm|,"secret_key":"([^"]+)",| && print "$1\n"' )
+    vpn_creds_url=${OTS_URL_BASE}${OTS_PRIVATE_URI}/${secret_key}
 
 }
 send_welcome_letter_paste() {
