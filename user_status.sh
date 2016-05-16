@@ -49,6 +49,25 @@ find_email() {
     openssl x509 -in $crt -text | grep Subject | grep CN | perl -ne 'm|emailAddress=\s*(\S+)| && print "$1\n"'
 }
 
+is_active() {
+
+date=$(openssl x509 -enddate -noout -in $crt  | perl -ne 'm|notAfter=(.+)| && print "$1\n"' )
+sdate=$(date -d "$date" +%s)
+today=$(date +%s)
+cutoff=$(( today + 86400 * 30 ))
+
+    if [ "$sdate" -le "$today" ]
+    then
+        echo $vpn_user,$email,expired
+    elif [ "$sdate" -le "$cutoff" ]
+    then
+        echo $vpn_user,$email,expiring_soon
+    else
+        echo $vpn_user,$email,active
+    fi
+
+}
+
 check_status(){
 
     for vpn_user in $(cut -f1 -d, $USER_PW_FILE)
@@ -64,10 +83,12 @@ check_status(){
                 then
                     echo $vpn_user,$email,disabled
                 else
-                    echo $vpn_user,$email,active
+                    #echo $vpn_user,$email,active
+                    is_active
                 fi
             else
-                echo $vpn_user,$email,active
+                is_active
+                #echo $vpn_user,$email,active
             fi
         else
             echo $vpn_user,$email,revoked
