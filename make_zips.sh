@@ -10,7 +10,8 @@ set -u
 set -e
 user=${1}
 
-vpn_env=$( hostname | cut -f3 -d- | cut -f1 -d. )
+#vpn_env=$( hostname | cut -f3 -d- | cut -f1 -d. )
+vpn_env=$( hostname | perl -ne 'm|ovpn-([^.]+)\.| && print "$1\n"'  )
 
 cd /tmp
 mkdir $user-gdc; 
