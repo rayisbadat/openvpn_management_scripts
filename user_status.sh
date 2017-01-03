@@ -15,6 +15,9 @@ then
     exit 1
 fi
 
+#update the crl otherwise everything fails (good for 30 days)
+revoke-full client &>/dev/null
+
 set -u
 set -e
 
@@ -25,10 +28,15 @@ make_crl(){
 
 
 is_active_crt(){
-    openssl verify -crl_check -CAfile $crl $crt &>/dev/null
-    if [ $?  -eq 0 ]
+    if [ -e "$crt" ]
     then
-        echo true
+        openssl verify -crl_check -CAfile $crl $crt &>/dev/null
+        if [ $?  -eq 0 ]
+        then
+            echo true
+        else
+            echo false
+        fi
     else
         echo false
     fi
@@ -45,25 +53,30 @@ check_for_revoked(){
 }
 
 find_email() {
-    #username=$( openssl x509 -in ../easy-rsa/keys/jporter.crt -text | grep Subject | grep CN | perl -ne 'm|CN=([^/]+)/| && print "$1\n"' )
     openssl x509 -in $crt -text | grep Subject | grep CN | perl -ne 'm|emailAddress=\s*(\S+)| && print "$1\n"'
 }
 
 is_active() {
 
-date=$(openssl x509 -enddate -noout -in $crt  | perl -ne 'm|notAfter=(.+)| && print "$1\n"' )
-sdate=$(date -d "$date" +%s)
-today=$(date +%s)
-cutoff=$(( today + 86400 * 30 ))
-
-    if [ "$sdate" -le "$today" ]
+    if [ -e "$crt" ]
     then
-        echo $vpn_user,$email,expired
-    elif [ "$sdate" -le "$cutoff" ]
-    then
-        echo $vpn_user,$email,expiring_soon
+     
+	    date=$(openssl x509 -enddate -noout -in $crt  | perl -ne 'm|notAfter=(.+)| && print "$1\n"')
+	    sdate=$(date -d "$date" +%s)
+	    today=$(date +%s)
+	    cutoff=$(( today + 86400 * 30 ))
+	
+	    if [ "$sdate" -le "$today" ]
+	    then
+	        echo $vpn_user,$email,expired
+	    elif [ "$sdate" -le "$cutoff" ]
+	    then
+	        echo $vpn_user,$email,expiring_soon
+	    else
+	        echo $vpn_user,$email,active
+	    fi
     else
-        echo $vpn_user,$email,active
+        echo echo $vpn_user,$email,revoked
     fi
 
 }
@@ -73,10 +86,10 @@ check_status(){
     for vpn_user in $(cut -f1 -d, $USER_PW_FILE)
     do
         crt="${KEY_PATH}/${vpn_user}.crt"
-        email=$( find_email )
 
         if [ "$(is_active_crt)" == "true" ]
         then
+            email=$( find_email )
             if [ -e /etc/openvpn/clients.d/$vpn_user ]
             then
                 if [ $( grep disable /etc/openvpn/clients.d/$vpn_user ) ]
@@ -91,7 +104,8 @@ check_status(){
                 #echo $vpn_user,$email,active
             fi
         else
-            echo $vpn_user,$email,revoked
+            #echo $vpn_user,$email,revoked
+            echo $vpn_user,NoEmailFnd,revoked
         fi
    done
 
