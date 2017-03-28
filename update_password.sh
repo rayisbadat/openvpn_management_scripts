@@ -14,9 +14,8 @@ then
     exit 1
 fi
 
-password_hashed=$( python -c "import bcrypt;print bcrypt.hashpw('$password', bcrypt.gensalt())" )
-#perl -p -i.bak-pwreset -e "s|^($username),(.+)$|\$1,$password_hashed|" $USER_PW_FILE
+safe_password=$( echo $password | perl -pe 's|[^A-Za-z0-9\@\-\_\.\n]|_|g' )
+password_hashed=$( python -c "import bcrypt;print bcrypt.hashpw('$safe_password', bcrypt.gensalt())" )
 
 cp $USER_PW_FILE ${USER_PW_FILE}.bak-pwreset
 sed -i "/$username,\\$/d" ../user_passwd.csv && echo "$username,$password_hashed" >> $USER_PW_FILE
-
