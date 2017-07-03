@@ -1,9 +1,13 @@
 #!/bin/bash
-#   Copyright 2015 CDIS
+#   Copyright 2017 CDIS
 #   Author: Ray Powell rpowell1@uchicago.edu
 
 
-source /etc/openvpn/bin/settings.sh
+if [ -e /etc/openvpn/bin/settings.sh ] && [ -z "$VPN_SETTINGS_LOADED" ]
+then
+    source /etc/openvpn/bin/settings.sh
+fi
+
 
 username=${1}
 
@@ -40,12 +44,14 @@ cp $KEY_DIR/$username.crt $KEY_DIR/user_certs/$username.crt-$(date +%F-%T)
 
 #This generates the ovpn file for the road warrior
 # aka $0 $username email
-create_ovpn.sh $KEY_CN $KEY_EMAIL > $KEY_DIR/ovpn_files/${username}-${CLOUD_NAME}.ovpn 2> /dev/null
-create_seperated_vpn_zip.sh $KEY_CN &> /dev/null
+#for vpn_env in ${VPN_ENVS}
+#do
+#    export vpn_type=$(echo $vpn_env | cut -d":" -f1 )
+#    export vpn_port=$(echo $vpn_env | cut -d":" -f2 )
+#    export EXTPORT=${vpn_port}
+#    create_ovpn.sh $KEY_CN $KEY_EMAIL > $KEY_DIR/ovpn_files/${username}-${CLOUD_NAME}-${vpn_type}.ovpn 2> /dev/null
+    create_ovpn.sh $KEY_CN $KEY_EMAIL > $KEY_DIR/ovpn_files/${username}-${CLOUD_NAME}.ovpn 2> /dev/null
+#done
 
-#Create the vpn username/password hack
-password=$(perl -e 'my $string; my @chars=("A".."Z","a".."z","@","_","-"); while ( not $string =~ /[-_@]/) { $string=""; $string .= $chars[rand @chars] for 1..15;} print "$string"')
-password_hashed=$( python -c "import bcrypt;print bcrypt.hashpw('$password', bcrypt.gensalt())" )
-echo "$username,$password_hashed" >> $USER_PW_FILE
-echo $password
+create_seperated_vpn_zip.sh $KEY_CN &> /dev/null
 
