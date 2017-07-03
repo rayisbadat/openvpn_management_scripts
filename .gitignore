@@ -2,3 +2,4 @@ settings.sh
 .venv*
 *.bak
 templates/environments
+environments
