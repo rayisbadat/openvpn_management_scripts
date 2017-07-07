@@ -19,12 +19,6 @@ set -e
 set -u
 
 
-create_ots_site_entry() {
-    ots_out=$( curl -u "${OTS_USERNAME}:${OTS_API_TOKEN}" -F "secret=$( echo -e $vpn_username\\n${vpn_password} )"  ${OTS_URL_BASE}${OTS_SHARE_URI}  2>/dev/null )
-    secret_key=$( echo $ots_out | perl -ne 'm|,"secret_key":"([^"]+)",| && print "$1\n"' )
-    vpn_creds_url=${OTS_URL_BASE}${OTS_PRIVATE_URI}/${secret_key}
-
-}
 update_password_file() {
     cp $USER_PW_FILE ${USER_PW_FILE}.bak-pwreset
     sed -i "/$vpn_username,\\$/d" ../user_passwd.csv && echo "$vpn_username,$vpn_password" >> $USER_PW_FILE
@@ -53,6 +47,5 @@ vpn_password="\$TOTP\$${totp_secret}"
 
 update_password_file
 generate_qr_code
-#create_ots_site_entry
 print_info
 

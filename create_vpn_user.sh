@@ -42,16 +42,9 @@ build-key-batch  $username &>/dev/null
 [ -d  $KEY_DIR/user_certs/ ]  || mkdir  $KEY_DIR/user_certs/
 cp $KEY_DIR/$username.crt $KEY_DIR/user_certs/$username.crt-$(date +%F-%T)
 
-#This generates the ovpn file for the road warrior
-# aka $0 $username email
-#for vpn_env in ${VPN_ENVS}
-#do
-#    export vpn_type=$(echo $vpn_env | cut -d":" -f1 )
-#    export vpn_port=$(echo $vpn_env | cut -d":" -f2 )
-#    export EXTPORT=${vpn_port}
-#    create_ovpn.sh $KEY_CN $KEY_EMAIL > $KEY_DIR/ovpn_files/${username}-${CLOUD_NAME}-${vpn_type}.ovpn 2> /dev/null
-    create_ovpn.sh $KEY_CN $KEY_EMAIL > $KEY_DIR/ovpn_files/${username}-${CLOUD_NAME}.ovpn 2> /dev/null
-#done
+#Create the OVPN file for the new user
+create_ovpn.sh $KEY_CN $KEY_EMAIL > $KEY_DIR/ovpn_files/${username}-${CLOUD_NAME}.ovpn 2> /dev/null
 
+#Create the seperated zip file for linux users dealing with network manager
 create_seperated_vpn_zip.sh $KEY_CN &> /dev/null
 
