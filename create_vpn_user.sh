@@ -48,3 +48,9 @@ create_ovpn.sh $KEY_CN $KEY_EMAIL > $KEY_DIR/ovpn_files/${username}-${CLOUD_NAME
 #Create the seperated zip file for linux users dealing with network manager
 create_seperated_vpn_zip.sh $KEY_CN &> /dev/null
 
+#systemd
+cp $KEY_DIR/ovpn_files/${username}-${CLOUD_NAME}.ovpn $KEY_DIR/ovpn_files_systemd/${username}-${CLOUD_NAME}-systemd.ovpn
+cat $TEMPLATE_DIR/client_ovpn_systemd.settings >> $KEY_DIR/ovpn_files_systemd/${username}-${CLOUD_NAME}-systemd.ovpn
+#ovpn_files_resolvconf
+cp $KEY_DIR/ovpn_files/${username}-${CLOUD_NAME}.ovpn $KEY_DIR/ovpn_files_resolvconf/${username}-${CLOUD_NAME}-resolvconf.ovpn
+cat $TEMPLATE_DIR/client_ovpn_resolvconf.settings >> $KEY_DIR/ovpn_files_resolvconf/${username}-${CLOUD_NAME}-resolvconf.ovpn

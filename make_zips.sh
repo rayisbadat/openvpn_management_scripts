@@ -15,10 +15,13 @@ fi
 
 set -u
 set -e
-user=${1}
+username=${1}
 
 cd /tmp
-mkdir $user-gdc; 
-cp /etc/openvpn/ovpn_files/$user-$CLOUD_NAME.ovpn /tmp/$user-gdc/; 
-cp /etc/openvpn/ovpn_files_seperated/$user-$CLOUD_NAME-seperated.tgz /tmp/$user-gdc/; 
-zip -j $user.zip $user-gdc/*
+mkdir $username-gdc;
+mkdir $username-gdc/linux;
+cp $KEY_DIR/ovpn_files/$username-$CLOUD_NAME.ovpn /tmp/$username-gdc/; 
+cp $KEY_DIR/ovpn_files_seperated/$username-$CLOUD_NAME-seperated.tgz /tmp/$username-gdc/; 
+cp $KEY_DIR/ovpn_files_systemd/${username}-${CLOUD_NAME}-systemd.ovpn /tmp/$username-gdc/linux/;
+cp $KEY_DIR/ovpn_files_resolvconf/${username}-${CLOUD_NAME}-resolvconf.ovpn /tmp/$username-gdc/linux/;
+zip -r $username.zip $username-gdc/*

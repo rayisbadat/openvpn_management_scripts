@@ -12,3 +12,4 @@ verb 4
 ns-cert-type server
 key-direction 1
 auth-user-pass
+reneg-sec 0

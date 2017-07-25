@@ -11,6 +11,7 @@ comp-lzo
 verb 4
 ns-cert-type server
 auth-user-pass
+reneg-sec 0
 
 ca ca.crt
 cert client.crt
