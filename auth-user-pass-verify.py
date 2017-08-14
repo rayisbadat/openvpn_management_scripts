@@ -29,7 +29,7 @@ for row in reader:
         hashed = row[1]
         try:
             # If bcryt hashes detected, check user supplied password hash
-            if (hashed.startswith('$2a$') or hashed.startswith('$2b$') hashed.startswith('$2y$')):
+            if (hashed.startswith('$2a$') or hashed.startswith('$2b$') or hashed.startswith('$2y$')):
                 if (bcrypt.hashpw(password, hashed) == hashed):
                     f.close()
                     sys.exit(0)
