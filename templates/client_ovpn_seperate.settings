@@ -1,6 +1,6 @@
 client
 dev tun
-proto udp
+proto tcp
 remote $EXTHOST 1194
 resolv-retry infinite
 nobind
