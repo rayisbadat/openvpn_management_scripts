@@ -1,0 +1,2 @@
+apt-get install libffi-dev and python-dev
+pip install pyotp bcrypt
