@@ -80,6 +80,15 @@ install_easyrsa() {
 
 }
 
+install_settings() {
+
+    SETTINGS_PATH="$BIN_PATH/settings.sh"
+    cp "$OPENVPN_PATH/bin/templates/settings.sh.template" "$SETTINGS_PATH"
+    perl -p -i -e "s|#EMAIL#|$EMAIL|" $SETTINGS_PATH
+    perl -p -i -e "s|#CLOUD_NAME#|$KEY_NAME|" $SETTINGS_PATH
+
+}
+
 build_PKI() {
 
     cd $EASYRSA_PATH
@@ -98,7 +107,8 @@ build_PKI() {
 
 
     prep_env
-    install_pkgs
-    install_custom_scripts
-    install_easyrsa
-    build_PKI
+    #install_pkgs
+    #install_custom_scripts
+    #install_easyrsa
+    install_settings
+    #build_PKI
