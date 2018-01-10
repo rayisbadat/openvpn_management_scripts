@@ -1,0 +1,4 @@
+#delete QRCodes every 48 hrs
+*/1 * * * * find /var/www/qrcode/  -type f -mtime 2 -exec rm {} \; &>/dev/null
+1 1 * * * rm -rf /tmp/*vpn* &>/dev/null
+1 1 * * * rm -rf /tmp/*.zip &>/dev/null
