@@ -1,5 +1,15 @@
 #!/bin/bash
 
+if [ -e /etc/profile.d/99-proxy.sh ]
+then
+    source /etc/profile.d/99-proxy.sh
+fi
+
+if [ -e /etc/openvpn/bin/settings.sh ] && [ -z "$VPN_SETTINGS_LOADED" ]
+then
+    source /etc/openvpn/bin/settings.sh
+fi
+
 is_server_cert_expired()
 {
     OVPN_BASE=/etc/openvpn
@@ -34,9 +44,9 @@ is_expired() {
 }
 
 #Check if server cert expired
-is_server_cert_expired | ifne mail -s "$(hostname) - VPN Server Certs Expiring Soon" ops@nci-gdc.datacommons.io
+is_server_cert_expired | ifne mail -s "$(hostname) - VPN Server Certs Expiring Soon" #EMAIL
 
 #Check if users expired
-/etc/openvpn/bin/user_status.sh  all | grep expir | ifne mail -s "$(hostname) - VPN Users Expiring Soon" ops@nci-gdc.datacommons.io
+/etc/openvpn/bin/user_status.sh  all | grep expir | ifne mail -s "$(hostname) - VPN Users Expiring Soon" $EMAIL
 
 

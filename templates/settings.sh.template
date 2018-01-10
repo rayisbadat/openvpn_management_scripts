@@ -1,5 +1,6 @@
 export VPN_SETTINGS_LOADED="1"
 export CLOUD_NAME='#CLOUD_NAME#'
+export FQDN="#FQDN#"
 ## EXTHOST is set in the easy-rsa/vars env settings.  I think these values have to maych so removing from here
 
 #sendemail vars

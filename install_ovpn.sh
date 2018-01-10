@@ -20,20 +20,43 @@ VARS_PATH="$EASYRSA_PATH/vars"
     KEY_EXPIRE=365
 
 
-set -e
-set -u
+
+print_help() {
+    echo "Welcome."
+    echo "USAGE 1 : $0 " 
+    echo "        : This will run the script and prompt for FQDN and a OU Name"
+    echo "USAGE 2 : export FQDN=foo.bar.tld; export cloud="XDC"; export server_pem='/root/server.pem'; $0"
+    echo "        : This will not prompt for any input"
+    echo ""
+    echo "This install script assumes you have a working email or email relay configured."
+    echo ""
+    echo "This scripts creates a lighttpd webserver for QRCodes.  You will need to copy the key+cert as a pem to /etc/lighttpd/certs/server.pem"
+}
 
 prep_env() {
 
-    echo "What is the FQDN for this VPN endpoint? "
-    read FQDN
-    echo "What is the Cloud/Env/OU/Abrreviation you want to use? "
-    read cloud
-    #echo "What email address do you want to use? "
-    #read email
-    
+    if [ ! $FQDN ]
+    then
+        echo "What is the FQDN for this VPN endpoint? "
+        read FQDN
+    fi
+    if [ ! $cloud ]
+    then
+        echo "What is the Cloud/Env/OU/Abrreviation you want to use? "
+        read cloud
+    fi
+    if [ ! $EMAIL ]
+    then
+        echo "What email address do you want to use? "
+        read EMAIL
+    fi
+    if [ $server_pem ]
+    then
+        SERVER_PEM=$server_pem
+    else
+        SERVER_PEM=""
+    fi
 
-    
 
     apt-get update
     apt-get -y purge cloud-init
@@ -45,6 +68,7 @@ prep_env() {
 install_pkgs() {
     apt-get update; 
     apt-get -y install openvpn bridge-utils libssl-dev openssl zlib1g-dev easy-rsa haveged
+    useradd  --shell /bin/nologin --system openvpn
 }
 
 install_custom_scripts() {
@@ -84,8 +108,9 @@ install_settings() {
 
     SETTINGS_PATH="$BIN_PATH/settings.sh"
     cp "$OPENVPN_PATH/bin/templates/settings.sh.template" "$SETTINGS_PATH"
+    perl -p -i -e "s|#FQDN#|$FQDN|" $SETTINGS_PATH
     perl -p -i -e "s|#EMAIL#|$EMAIL|" $SETTINGS_PATH
-    perl -p -i -e "s|#CLOUD_NAME#|$KEY_NAME|" $SETTINGS_PATH
+    perl -p -i -e "s|#CLOUD_NAME#|${cloud}-vpn|" $SETTINGS_PATH
 
 }
 
@@ -100,15 +125,46 @@ build_PKI() {
     ./pkitool --server $EXTHOST ## creates a server cert and key
     openvpn --genkey --secret ta.key
 
+}
 
+install_webserver() {
+    #Webserver used for QRCodes
+    apt-get install -y lighttpd
+    cp "$OPENVPN_PATH/bin/templates/lighttpd.conf.template"  /etc/lighttpd/lighttpd.conf
+
+    mkdir -p --mode=750 /var/www/qrcode
+    chown openvpn:www-data /var/www/qrcode
+    
+    if [ -f $SERVER_PEM ]
+    then
+        mkdir --mode=700 /etc/lighttpd/certs
+        cp $SERVER_PEM /etc/lighttpd/certs/server.pem
+        service lighttpd restart
+    fi
+
+}
+
+install_cron() {
+    cp "$OPENVPN_PATH/bin/templates/cron.template"  /etc/cron.d/openvpn
 }
 
     
 
+fix_perms() {
+    chown openvpn:openvpn /etc/openvpn -R
+}
 
+
+    print_help
     prep_env
+set -e
+set -u
     #install_pkgs
-    install_custom_scripts
+    #install_custom_scripts
     #install_easyrsa
     install_settings
     #build_PKI
+    #install_webserver
+    #install_cron
+
+

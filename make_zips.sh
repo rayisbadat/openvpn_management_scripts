@@ -18,10 +18,10 @@ set -e
 username=${1}
 
 cd /tmp
-mkdir $username-gdc;
-mkdir $username-gdc/linux;
-cp $KEY_DIR/ovpn_files/$username-$CLOUD_NAME.ovpn /tmp/$username-gdc/; 
-cp $KEY_DIR/ovpn_files_seperated/$username-$CLOUD_NAME-seperated.tgz /tmp/$username-gdc/; 
-cp $KEY_DIR/ovpn_files_systemd/${username}-${CLOUD_NAME}-systemd.ovpn /tmp/$username-gdc/linux/;
-cp $KEY_DIR/ovpn_files_resolvconf/${username}-${CLOUD_NAME}-resolvconf.ovpn /tmp/$username-gdc/linux/;
-zip -r $username.zip $username-gdc/*
+mkdir $username-${CLOUD_NAME};
+mkdir $username-${CLOUD_NAME}/linux;
+cp $KEY_DIR/ovpn_files/$username-$CLOUD_NAME.ovpn /tmp/$username-${CLOUD_NAME}/; 
+cp $KEY_DIR/ovpn_files_seperated/$username-$CLOUD_NAME-seperated.tgz /tmp/$username-${CLOUD_NAME}/; 
+cp $KEY_DIR/ovpn_files_systemd/${username}-${CLOUD_NAME}-systemd.ovpn /tmp/$username-${CLOUD_NAME}/linux/;
+cp $KEY_DIR/ovpn_files_resolvconf/${username}-${CLOUD_NAME}-resolvconf.ovpn /tmp/$username-${CLOUD_NAME}/linux/;
+zip -r $username.zip $username-${CLOUD_NAME}/*
