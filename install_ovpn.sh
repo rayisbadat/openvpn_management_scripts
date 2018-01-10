@@ -108,7 +108,7 @@ build_PKI() {
 
     prep_env
     #install_pkgs
-    #install_custom_scripts
+    install_custom_scripts
     #install_easyrsa
     install_settings
     #build_PKI

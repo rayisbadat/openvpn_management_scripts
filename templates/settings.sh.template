@@ -4,8 +4,8 @@ export CLOUD_NAME='#CLOUD_NAME#'
 
 #sendemail vars
 #Set vars and constants
-export REPLYTO=#EMAIL#
-export EMAIL=#EMAIL#
+export REPLYTO='#EMAIL#'
+export EMAIL='#EMAIL#'
 
 ####################################################
 #  Do not normally need to alter below here these  #
