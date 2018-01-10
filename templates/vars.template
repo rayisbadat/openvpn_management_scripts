@@ -1,4 +1,5 @@
 # easy-rsa parameter settings
+export EXTHOST="#EXTHOST#"
 
 # NOTE: If you installed from an RPM,
 # don't edit this file in place in
