@@ -270,7 +270,10 @@ set -u
     build_PKI
     configure_ovpn
     tweak_network
-    install_webserver
+    if [ -f "$SERVER_PEM" ]
+    then
+        install_webserver
+    fi
     install_cron
     misc
 
