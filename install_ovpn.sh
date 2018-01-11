@@ -67,7 +67,7 @@ prep_env() {
 
 install_pkgs() {
     apt-get update; 
-    apt-get -y install openvpn bridge-utils libssl-dev openssl zlib1g-dev easy-rsa haveged
+    apt-get -y install openvpn bridge-utils libssl-dev openssl zlib1g-dev easy-rsa haveged zip mutt
     useradd  --shell /bin/nologin --system openvpn
 }
 
@@ -173,12 +173,11 @@ misc() {
     ln -s easy-rsa/keys/ovpn_files
     mkdir clients.d/
     mkdir easy-rsa/keys/ovpn_files_seperated/
+    mkdir easy-rsa/keys/ovpn_files_systemd/
+    mkdir easy-rsa/keys/ovpn_files_resolvconf/
     touch user_passwd.csv
-
     chown openvpn:openvpn /etc/openvpn -R
-
 }
-
 
     print_help
     prep_env

@@ -21,7 +21,7 @@ USER_CERT_PATH="$KEY_PATH/$1.crt"
 USER_KEY_PATH="$KEY_PATH/$1.key"
 
 #make a temp dir
-TEMP_NAME="$username-$CLOUD_NAME"
+TEMP_NAME="$username-$CLOUD_NAME-seperated"
 TEMP_DIR="$TEMP_ROOT/$TEMP_NAME"
 [ -d $TEMP_DIR ] && rm -rf $TEMP_DIR
 mkdir $TEMP_DIR

@@ -47,6 +47,5 @@ is_expired() {
 is_server_cert_expired | ifne mail -s "$(hostname) - VPN Server Certs Expiring Soon" #EMAIL
 
 #Check if users expired
-/etc/openvpn/bin/user_status.sh  all | grep expir | ifne mail -s "$(hostname) - VPN Users Expiring Soon" $EMAIL
-
+$VPN_BIN_ROOT/user_status.sh  all | grep expir | ifne mail -s "$(hostname) - VPN Users Expiring Soon" $EMAIL
 

@@ -43,10 +43,10 @@ build-key-batch  $username &>/dev/null
 cp $KEY_DIR/$username.crt $KEY_DIR/user_certs/$username.crt-$(date +%F-%T)
 
 #Create the OVPN file for the new user
-create_ovpn.sh $KEY_CN $KEY_EMAIL > $KEY_DIR/ovpn_files/${username}-${CLOUD_NAME}.ovpn 2> /dev/null
+$VPN_BIN_ROOT/create_ovpn.sh $KEY_CN $KEY_EMAIL > $KEY_DIR/ovpn_files/${username}-${CLOUD_NAME}.ovpn 2> /dev/null
 
 #Create the seperated zip file for linux users dealing with network manager
-create_seperated_vpn_zip.sh $KEY_CN &> /dev/null
+$VPN_BIN_ROOT/create_seperated_vpn_zip.sh $KEY_CN &> /dev/null
 
 #systemd
 cp $KEY_DIR/ovpn_files/${username}-${CLOUD_NAME}.ovpn $KEY_DIR/ovpn_files_systemd/${username}-${CLOUD_NAME}-systemd.ovpn
