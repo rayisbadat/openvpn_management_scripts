@@ -20,6 +20,10 @@ VARS_PATH="$EASYRSA_PATH/vars"
     KEY_EXPIRE=365
 
 
+#OpenVPN
+PROTO=tcp
+
+
 
 print_help() {
     echo "Welcome."
@@ -56,6 +60,21 @@ prep_env() {
     else
         SERVER_PEM=""
     fi
+    if [ ! $VPN_SUBNET ]
+    then
+        VPN_SUBNET="192.168.64.0/18"
+        VPN_SUBNET_BASE="${VPN_SUBNET%/*}"
+        VPN_SUBNET_MASK=$( sipcalc $VPN_SUBNET | perl -ne 'm|Network mask\s+-\s+(\S+)| && print "$1"' )
+        VPN_SUBNET_MASK_BITS=$( sipcalc $VPN_SUBNET | perl -ne 'm|Network mask \(bits\)\s+-\s+(\S+)| && print "$1"' )
+    fi
+    if [ ! $VM_SUBNET ]
+    then
+        VM_SUBNET="172.16.0.0/12"
+        VM_SUBNET_BASE="${VM_SUBNET%/*}"
+        VM_SUBNET_MASK=$( sipcalc $VM_SUBNET | perl -ne 'm|Network mask\s+-\s+(\S+)| && print "$1"' )
+        VM_SUBNET_MASK_BITS=$( sipcalc $VM_SUBNET | perl -ne 'm|Network mask \(bits\)\s+-\s+(\S+)| && print "$1"' )
+    fi
+        
 
 
     apt-get update
@@ -67,7 +86,7 @@ prep_env() {
 
 install_pkgs() {
     apt-get update; 
-    apt-get -y install openvpn bridge-utils libssl-dev openssl zlib1g-dev easy-rsa haveged zip mutt
+    apt-get -y install openvpn bridge-utils libssl-dev openssl zlib1g-dev easy-rsa haveged zip mutt sipcalc
     useradd  --shell /bin/nologin --system openvpn
 }
 
@@ -134,11 +153,57 @@ build_PKI() {
     ./pkitool --server $EXTHOST ## creates a server cert and key
     openvpn --genkey --secret ta.key
     mv ta.key $EASYRSA_PATH/keys/ta.key
+i
+    #This will error but thats fine, the crl.pem was created (without it openvpn server crashes) 
+    set +e
+    revoke-full client &>/dev/null || true
+    set -e
 
 }
 
 configure_ovpn() {
-    echo "Moo"
+
+    OVPNCONF_PATH="/etc/openvpn/openvpn.conf"
+    cp "$OPENVPN_PATH/bin/templates/openvpn.conf.template" "$OVPNCONF_PATH"
+
+    perl -p -i -e "s|#FQDN#|$FQDN|" $OVPNCONF_PATH
+
+    #perl -p -i -e "s|#VPN_SUBNET#|$VPN_SUBNET|" $OVPNCONF_PATH
+    perl -p -i -e "s|#VPN_SUBNET_BASE#|$VPN_SUBNET_BASE|" $OVPNCONF_PATH
+    perl -p -i -e "s|#VPN_SUBNET_MASK#|$VPN_SUBNET_MASK|" $OVPNCONF_PATH
+    #perl -p -i -e "s|#VPN_SUBNET_MASK_BITS#|$VPN_SUBNET_MASK_BITS|" $OVPNCONF_PATH
+
+    #perl -p -i -e "s|#VM_SUBNET#|$VPN_SUBNET|" $OVPNCONF_PATH
+    perl -p -i -e "s|#VM_SUBNET_BASE#|$VPN_SUBNET_BASE|" $OVPNCONF_PATH
+    perl -p -i -e "s|#VM_SUBNET_MASK#|$VPN_SUBNET_MASK|" $OVPNCONF_PATH
+    #perl -p -i -e "s|#VM_SUBNET_MASK_BITS#|$VPN_SUBNET_MASK_BITS|" $OVPNCONF_PATH
+
+    perl -p -i -e "s|#PROTO#|$PROTO|" $OVPNCONF_PATH
+
+    systemctl restart openvpn
+
+}
+
+tweak_network() {
+
+    NetTweaks_PATH="$OPENVPN_PATH/bin/network_tweaks.sh"
+    cp "$OPENVPN_PATH/bin/templates/network_tweaks.sh.template" "$NetTweaks_PATH"
+    perl -p -i -e "s|#VPN_SUBNET#|$VPN_SUBNET|" $NetTweaks_PATH
+    #perl -p -i -e "s|#VPN_SUBNET_BASE#|$VPN_SUBNET_BASE|" $NetTweaks_PATH
+    #perl -p -i -e "s|#VPN_SUBMASK#|$VPN_SUBNET_MASK|" $NetTweaks_PATH
+    #perl -p -i -e "s|#VPN_SUBNET_MASK_BITS#|$VPN_SUBNET_MASK_BITS|" $NetTweaks_PATH
+
+    perl -p -i -e "s|#VM_SUBNET#|$VPN_SUBNET|" $NetTweaks_PATH
+    #perl -p -i -e "s|#VM_SUBNET_BASE#|$VPN_SUBNET_BASE|" $NetTweaks_PATH
+    #perl -p -i -e "s|#VM_SUBMASK#|$VPN_SUBNET_MASK|" $NetTweaks_PATH
+    #perl -p -i -e "s|#VM_SUBNET_MASK_BITS#|$VPN_SUBNET_MASK_BITS|" $NetTweaks_PATH
+
+    perl -p -i -e "s|#PROTO#|$PROTO|" $NetTweaks_PATH
+
+    chmod +x $NetTweaks_PATH
+    $NetTweaks_PATH
+    perl -p -i.bak -e 's|exit 0|/etc/openvpn/bin/network_tweaks.sh\nexit 0|' /etc/rc.local
+    
 
 }
 
@@ -172,6 +237,7 @@ misc() {
     mkdir easy-rsa/keys/user_certs
     ln -s easy-rsa/keys/ovpn_files
     mkdir clients.d/
+    mkdir clients.d/tmp/
     mkdir easy-rsa/keys/ovpn_files_seperated/
     mkdir easy-rsa/keys/ovpn_files_systemd/
     mkdir easy-rsa/keys/ovpn_files_resolvconf/
@@ -183,13 +249,15 @@ misc() {
     prep_env
 set -e
 set -u
-    #install_pkgs
-    #install_custom_scripts
-    #install_easyrsa
-    #install_settings
-    #build_PKI
-    #install_webserver
-    #install_cron
+    install_pkgs
+    install_custom_scripts
+    install_easyrsa
+    install_settings
+    build_PKI
+    configure_ovpn
+    tweak_network
+    install_webserver
+    install_cron
     misc
 
 

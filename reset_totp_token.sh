@@ -28,7 +28,7 @@ update_password_file() {
 generate_qr_code() {
     uuid=$(uuidgen)
     qrcode_out=/var/www/qrcode/${uuid}.svg
-    string=$( python -c "import pyotp; print( pyotp.totp.TOTP('$totp_secret').provisioning_uri('$vpn_username', issuer_name='GDC-OVPN') )" )
+    string=$( python -c "import pyotp; print( pyotp.totp.TOTP('$totp_secret').provisioning_uri('$vpn_username', issuer_name='$CLOUD_NAME') )" )
     $( python -c "import pyqrcode; pyqrcode.create('$string').svg('${qrcode_out}', scale=8)" )
     vpn_creds_url="https://${FQDN}/$uuid.svg"
 }
