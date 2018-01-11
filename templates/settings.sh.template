@@ -12,6 +12,11 @@ export EMAIL='#EMAIL#'
 #  Do not normally need to alter below here these  #
 ####################################################
 
+TEMP_ROOT='/tmp/ovpn'
+if [ ! -d "$TEMP_ROOT" ]
+then
+    mkdir -p $TEMP_ROOT
+fi
 
 #EasyRSA
 export EASYRSA_PATH="/etc/openvpn/easy-rsa"

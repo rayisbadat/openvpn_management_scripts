@@ -78,6 +78,12 @@ install_custom_scripts() {
     #pull our openvpn scripts
     git clone -b feat/install_script  git@github.com:LabAdvComp/openvpn_management_scripts.git
     ln -s openvpn_management_scripts bin
+    cd  $BIN_PATH
+    virtualenv .venv
+    #This is needed or else you get : .venv/bin/activate: line 57: PS1: unbound variable
+    set +u
+    ( source .venv/bin/activate; pip install pyotp pyqrcode )
+    set -u
 
 }
 install_easyrsa() {
@@ -102,6 +108,9 @@ install_easyrsa() {
     perl -p -i -e "s|#KEY_NAME#|$KEY_NAME|" $VARS_PATH
     perl -p -i -e "s|#KEY_EXPIRE#|$KEY_EXPIRE|" $VARS_PATH
 
+
+    sed -i 's/^subjectAltName/#subjectAltName/' $EASYRSA_PATH/openssl-*.cnf
+
 }
 
 install_settings() {
@@ -124,6 +133,12 @@ build_PKI() {
     ./pkitool --initca ## creates ca cert and key
     ./pkitool --server $EXTHOST ## creates a server cert and key
     openvpn --genkey --secret ta.key
+    mv ta.key $EASYRSA_PATH/keys/ta.key
+
+}
+
+configure_ovpn() {
+    echo "Moo"
 
 }
 
@@ -144,14 +159,24 @@ install_webserver() {
 
 }
 
+
 install_cron() {
     cp "$OPENVPN_PATH/bin/templates/cron.template"  /etc/cron.d/openvpn
 }
 
     
 
-fix_perms() {
+misc() {
+    cd $OPENVPN_PATH
+    mkdir easy-rsa/keys/ovpn_files
+    mkdir easy-rsa/keys/user_certs
+    ln -s easy-rsa/keys/ovpn_files
+    mkdir clients.d/
+    mkdir easy-rsa/keys/ovpn_files_seperated/
+    touch user_passwd.csv
+
     chown openvpn:openvpn /etc/openvpn -R
+
 }
 
 
@@ -162,9 +187,10 @@ set -u
     #install_pkgs
     #install_custom_scripts
     #install_easyrsa
-    install_settings
+    #install_settings
     #build_PKI
     #install_webserver
     #install_cron
+    misc
 
 
