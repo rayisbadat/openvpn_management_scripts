@@ -39,6 +39,14 @@ print_help() {
 
 prep_env() {
 
+    apt-get update
+    apt-get -y purge cloud-init
+    echo "$FQDN" > /etc/hostname
+    hostname $(cat /etc/hostname)
+}
+
+parse_inputs() {
+
     if [ ! $FQDN ]
     then
         echo "What is the FQDN for this VPN endpoint? "
@@ -77,10 +85,6 @@ prep_env() {
         
 
 
-    apt-get update
-    apt-get -y purge cloud-init
-    echo "$FQDN" > /etc/hostname
-    hostname $(cat /etc/hostname)
 
 }
 
@@ -256,9 +260,10 @@ misc() {
 
     print_help
     prep_env
+    install_pkgs
+    parse_inputs
 set -e
 set -u
-    install_pkgs
     install_custom_scripts
     install_easyrsa
     install_settings
