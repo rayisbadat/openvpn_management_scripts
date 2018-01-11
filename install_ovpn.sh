@@ -86,7 +86,7 @@ prep_env() {
 
 install_pkgs() {
     apt-get update; 
-    apt-get -y install openvpn bridge-utils libssl-dev openssl zlib1g-dev easy-rsa haveged zip mutt sipcalc
+    apt-get -y install openvpn bridge-utils libssl-dev openssl zlib1g-dev easy-rsa haveged zip mutt sipcalc python-dev
     useradd  --shell /bin/nologin --system openvpn
 }
 
@@ -101,7 +101,7 @@ install_custom_scripts() {
     virtualenv .venv
     #This is needed or else you get : .venv/bin/activate: line 57: PS1: unbound variable
     set +u
-    ( source .venv/bin/activate; pip install pyotp pyqrcode )
+    ( source .venv/bin/activate; pip install pyotp pyqrcode bcrypt )
     set -u
 
 }
@@ -174,8 +174,8 @@ configure_ovpn() {
     #perl -p -i -e "s|#VPN_SUBNET_MASK_BITS#|$VPN_SUBNET_MASK_BITS|" $OVPNCONF_PATH
 
     #perl -p -i -e "s|#VM_SUBNET#|$VPN_SUBNET|" $OVPNCONF_PATH
-    perl -p -i -e "s|#VM_SUBNET_BASE#|$VPN_SUBNET_BASE|" $OVPNCONF_PATH
-    perl -p -i -e "s|#VM_SUBNET_MASK#|$VPN_SUBNET_MASK|" $OVPNCONF_PATH
+    perl -p -i -e "s|#VM_SUBNET_BASE#|$VM_SUBNET_BASE|" $OVPNCONF_PATH
+    perl -p -i -e "s|#VM_SUBNET_MASK#|$VM_SUBNET_MASK|" $OVPNCONF_PATH
     #perl -p -i -e "s|#VM_SUBNET_MASK_BITS#|$VPN_SUBNET_MASK_BITS|" $OVPNCONF_PATH
 
     perl -p -i -e "s|#PROTO#|$PROTO|" $OVPNCONF_PATH
@@ -236,13 +236,22 @@ misc() {
     mkdir easy-rsa/keys/ovpn_files
     mkdir easy-rsa/keys/user_certs
     ln -s easy-rsa/keys/ovpn_files
-    mkdir clients.d/
-    mkdir clients.d/tmp/
+
+    #If openvpn fails to start its cause perms. Init needs root rw to start, but service needs openvpn  rw to work
+    mkdir --mode 775 clients.d/
+    mkdir --mode 775 clients.d/tmp/
+    chown root:openvpn clients.d/tmp/
+
     mkdir easy-rsa/keys/ovpn_files_seperated/
     mkdir easy-rsa/keys/ovpn_files_systemd/
     mkdir easy-rsa/keys/ovpn_files_resolvconf/
+
     touch user_passwd.csv
-    chown openvpn:openvpn /etc/openvpn -R
+
+    mkdir environments
+    mkdir client-restrictions
+
+    chown -R openvpn:openvpn easy-rsa/ user_passwd.csv clients.d/tmp/
 }
 
     print_help

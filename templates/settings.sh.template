@@ -23,6 +23,7 @@ export EASYRSA_PATH="/etc/openvpn/easy-rsa"
 source $EASYRSA_PATH/vars &>/dev/null
 
 export USER_PW_FILE="/etc/openvpn/user_passwd.csv"
+export OPENVPN_CONF_DIR="/etc/openvpn"
 export OPENVPN_MY_BIN="/etc/openvpn/bin"
 
 #CDIS OpenVPN scripts contants
