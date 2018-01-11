@@ -157,7 +157,7 @@ build_PKI() {
     ./pkitool --server $EXTHOST ## creates a server cert and key
     openvpn --genkey --secret ta.key
     mv ta.key $EASYRSA_PATH/keys/ta.key
-i
+
     #This will error but thats fine, the crl.pem was created (without it openvpn server crashes) 
     set +e
     revoke-full client &>/dev/null || true
