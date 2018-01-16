@@ -3,6 +3,7 @@ settings.sh
 *.bak
 templates/environments
 environments
+network_tweaks.sh
 
 #vim
 *.swp
