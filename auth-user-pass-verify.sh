@@ -18,4 +18,4 @@ CLEAN=${CLEAN//[^a-zA-Z0-9_]/}
 CLEAN=`echo -n $CLEAN | tr A-Z a-z`
 export username="${CLEAN}"
 
-/etc/openvpn/bin/auth-user-pass-verify.py
+$VPN_BIN_ROOT/auth-user-pass-verify.py
