@@ -99,7 +99,7 @@ install_custom_scripts() {
     cd $OPENVPN_PATH
 
     #pull our openvpn scripts
-    git clone -b feat/install_script  git@github.com:LabAdvComp/openvpn_management_scripts.git
+    git clone git@github.com:LabAdvComp/openvpn_management_scripts.git
     ln -s openvpn_management_scripts bin
     cd  $BIN_PATH
     virtualenv .venv
