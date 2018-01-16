@@ -1,1 +1,0 @@
-/etc/openvpn/bin/create_vpn_user.sh

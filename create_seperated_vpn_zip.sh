@@ -1,10 +1,14 @@
 #!/bin/bash
-#   Copyright 2015 CDIS
+#   Copyright 2017 CDIS
 #   Author: Ray Powell rpowell1@uchicago.edu
+
+if [ -e /etc/openvpn/bin/settings.sh ] && [ -z "$VPN_SETTINGS_LOADED" ]
+then
+    source /etc/openvpn/bin/settings.sh
+fi
+
 set -u
 set -e
-source /etc/openvpn/bin/settings.sh
-
 
 username=${1}
 username=${username//_/}
@@ -17,8 +21,8 @@ USER_CERT_PATH="$KEY_PATH/$1.crt"
 USER_KEY_PATH="$KEY_PATH/$1.key"
 
 #make a temp dir
-TEMP_NAME="$username-$CLOUD_NAME"
-TEMP_DIR="/tmp/$TEMP_NAME"
+TEMP_NAME="$username-$CLOUD_NAME-seperated"
+TEMP_DIR="$TEMP_ROOT/$TEMP_NAME"
 [ -d $TEMP_DIR ] && rm -rf $TEMP_DIR
 mkdir $TEMP_DIR
 
@@ -32,5 +36,3 @@ while read r; do eval echo $r; done < $TEMPLATE_DIR/client_ovpn_seperate.setting
 
 tar -C $TEMP_DIR/../ -zcvf $KEY_DIR/ovpn_files_seperated/${username}-${CLOUD_NAME}-seperated.tgz  $TEMP_NAME
 
-#Cleanup
-#rm -rf /tmp/$username-$CLOUD_NAME

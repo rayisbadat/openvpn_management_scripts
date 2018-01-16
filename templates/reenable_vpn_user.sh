@@ -1,1 +1,0 @@
-/etc/openvpn/bin/reenable_vpn_user.sh

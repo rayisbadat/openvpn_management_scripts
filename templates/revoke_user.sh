@@ -1,1 +1,0 @@
-/etc/openvpn/bin/revoke_user.sh

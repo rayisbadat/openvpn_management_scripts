@@ -1,15 +1,16 @@
 #!/bin/bash
-#   Copyright 2015 CDIS
+#   Copyright 2017 CDIS
 #   Author: Ray Powell rpowell1@uchicago.edu
 
+if [ -e /etc/openvpn/bin/settings.sh ] && [ -z "$VPN_SETTINGS_LOADED" ]
+then
+    source /etc/openvpn/bin/settings.sh
+fi
 
 set -u
 set -e
 
-source /etc/openvpn/bin/settings.sh
-
 username=${1}
-
 
 #Source the settings for EASY RSA
 source $EASYRSA_PATH/vars
