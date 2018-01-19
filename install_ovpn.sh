@@ -160,7 +160,7 @@ build_PKI() {
 
     #This will error but thats fine, the crl.pem was created (without it openvpn server crashes) 
     set +e
-    revoke-full client &>/dev/null || true
+    ./revoke-full client &>/dev/null || true
     set -e
 
 }
