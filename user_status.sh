@@ -65,6 +65,7 @@ is_active() {
 	    sdate=$(date -d "$date" +%s)
 	    today=$(date +%s)
 	    cutoff=$(( today + 86400 * 30 ))
+	    cutoff=$(( today + 86400 * 14 ))
 	
 	    if [ "$sdate" -le "$today" ]
 	    then

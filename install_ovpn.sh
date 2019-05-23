@@ -90,7 +90,7 @@ parse_inputs() {
 
 install_pkgs() {
     apt-get update; 
-    apt-get -y install openvpn bridge-utils libssl-dev openssl zlib1g-dev easy-rsa haveged zip mutt sipcalc python-dev
+    apt-get -y install openvpn bridge-utils libssl-dev openssl zlib1g-dev easy-rsa haveged zip mutt sipcalc python-dev mailutils moreutils
     useradd  --shell /bin/nologin --system openvpn
 }
 

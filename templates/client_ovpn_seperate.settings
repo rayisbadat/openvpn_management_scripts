@@ -7,9 +7,10 @@ nobind
 persist-key
 persist-tun
 cipher AES-256-CBC
-comp-lzo
+compress lzo
+#comp-lzo yes
 verb 4
-ns-cert-type server
+remote-cert-tls server
 auth-user-pass
 reneg-sec 0
 
@@ -17,3 +18,14 @@ ca ca.crt
 cert client.crt
 key client.key
 tls-auth ta.key 1
+
+#Windows 10 Kludge
+ignore-unknown-option block-outside-dns
+ignore-unknown-option register-dns
+
+#OpenVPN version 2.3.X vs 2.4.X compat stuff
+ignore-unknown-option compress
+ignore-unknown-option comp-lzo
+compress lzo
+comp-lzo yes
+auth-nocache
