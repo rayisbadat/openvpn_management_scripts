@@ -21,7 +21,7 @@ set -u
 
 update_password_file() {
     cp $USER_PW_FILE ${USER_PW_FILE}.bak-pwreset
-    sed -i "/$vpn_username,\\$/d" ../user_passwd.csv && echo "$vpn_username,$vpn_password" >> $USER_PW_FILE
+    sed -i "/$vpn_username,\\$/d" $USER_PW_FILE && echo "$vpn_username,$vpn_password" >> $USER_PW_FILE
 
 }
 

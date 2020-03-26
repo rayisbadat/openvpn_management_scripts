@@ -23,7 +23,7 @@ script-security 3 execve
 
 #Cipher suite
 cipher AES-256-CBC
-comp-lzo
+compress yes
 
 #DHCP Information
 server #VPN_SUBNET_BASE# #VPN_SUBNET_MASK#
